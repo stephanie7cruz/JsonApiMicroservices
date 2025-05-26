@@ -1,0 +1,19 @@
+# Usa imagen oficial de .NET SDK para build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /app
+
+# Copia csproj y restaura dependencias
+COPY ProductService/*.csproj ./ProductService/
+RUN dotnet restore ProductService/ProductService.csproj
+
+# Copia todo y build
+COPY ProductService/. ./ProductService/
+WORKDIR /app/ProductService
+RUN dotnet publish -c Release -o out
+
+# Imagen runtime para correr el servicio
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
+WORKDIR /app
+COPY --from=build /app/ProductService/out ./
+EXPOSE 5000
+ENTRYPOINT ["dotnet", "ProductService.dll"]

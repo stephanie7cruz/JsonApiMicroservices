@@ -1,0 +1,20 @@
+services:
+  productservice:
+    build:
+      context: ./JsonApiMicroservices/ProductService
+      dockerfile: Dockerfile
+    ports:
+      - "5224:5224"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+
+  inventoryservice:
+    build:
+      context: ./JsonApiMicroservices/InventoryService
+      dockerfile: Dockerfile
+    ports:
+      - "5071:5071"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      - productservice
