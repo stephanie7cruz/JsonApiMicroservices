@@ -66,6 +66,49 @@ Pruebas unitarias con xUnit: Garantizan estabilidad de la lógica central antes 
 
 Swagger para documentación y pruebas interactivas.
 
+### Patrones de diseño usados en el proyecto
+1. Inyección de Dependencias (Dependency Injection - DI)
+Dónde: En Program.cs al registrar servicios con AddSingleton y al inyectar dependencias en los constructores (ProductClient, IProductService, IInventoryService).
+
+Por qué: Permite desacoplar la creación de objetos de su uso, facilitando la mantenibilidad, testeo unitario (mocking), y escalabilidad del código.
+
+Beneficio: Facilita el reemplazo de implementaciones (por ejemplo, mocks en pruebas unitarias), y hace que el código sea más modular y fácil de extender.
+
+2. Singleton
+Dónde: Al registrar servicios con .AddSingleton<IInventoryService, InventoryService>() y similares.
+
+Por qué: Queremos una única instancia del servicio durante toda la vida de la aplicación para gestionar el inventario o productos, evitando estados inconsistentes o cargas innecesarias.
+
+Beneficio: Eficiencia en recursos y estado compartido controlado.
+
+3. Repositorio (Repository)
+Dónde: Implícito en el servicio que interactúa con la base de datos (ProductService y InventoryService actúan como repositorios).
+
+Por qué: Se abstrae el acceso a datos en un único lugar, facilitando cambios futuros en la fuente de datos sin afectar la lógica de negocio.
+
+Beneficio: Código más limpio y desacoplado de la base de datos.
+
+4. DTO (Data Transfer Object)
+Dónde: Clases como ProductDto usadas para enviar datos estructurados entre servicios.
+
+Por qué: Evita exponer entidades internas directamente y facilita la serialización/deserialización entre servicios.
+
+Beneficio: Control estricto sobre qué datos se comparten y protección contra cambios accidentales.
+
+5. Middleware
+Dónde: Implementado como ApiKeyMiddleware para validar las API Keys en los requests.
+
+Por qué: Separar la lógica transversal de autenticación y autorización fuera de los controladores, manteniendo el código más limpio.
+
+Beneficio: Aplicar políticas globales de seguridad y funcionalidad de forma reutilizable y centralizada.
+
+6. Cliente HTTP (HttpClient Factory)
+Dónde: Uso de IHttpClientFactory para crear ProductClient.
+
+Por qué: Maneja eficientemente la creación y reuso de clientes HTTP evitando problemas comunes (como agotamiento de sockets).
+
+Beneficio: Código más robusto y optimizado para llamadas HTTP externas
+
 ### Decisiones Técnicas y Justificaciones
 | Decisión                    | Justificación                                                   |
 | --------------------------- | --------------------------------------------------------------- |
